@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#080410" />
+  <title>Yến đẹp gái</title>
+  <style>
+    :root { color-scheme: dark; --pink: #ff7bb2; --cream: #ffeaf4; }
+    * { box-sizing: border-box; }
+    html,body { margin: 0; width: 100%; height: 100%; height: 100dvh; overflow: hidden; }
+    body {
+      background: #070410;
+      font-family: Inter,"Segoe UI",system-ui,sans-serif;
+      color: #fff;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #heartScene { width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+    #heartScene:active { cursor:grabbing; }
+    .shade { position:fixed; inset:0; pointer-events:none;
+      background: radial-gradient(ellipse at 50% 45%, transparent 37%, rgba(4,1,12,.52) 100%); }
+    .topbar { position:fixed; inset:24px 28px auto; display:flex; gap:12px;
+      align-items:center; justify-content:space-between; z-index:10; pointer-events:none; }
+    .brand { display:flex; align-items:center; gap:10px; color:#ffbad5; font-size:11px;
+      letter-spacing:.32em; font-weight:650; text-transform:uppercase;
+      text-shadow:0 0 25px #fb548265; }
+    .brand .heart { font-size:20px; letter-spacing:0; filter:drop-shadow(0 0 10px #fe5d9b); }
+    .actions { display:flex; gap:8px; pointer-events:auto; }
+    .pill { border:1px solid #f5a8cb45; color:#ffd4e7; background:#26132ac9;
+      border-radius:24px; padding:10px 15px; cursor:pointer; font: 500 12px inherit;
+      font-family:inherit; font-size:12px; backdrop-filter:blur(12px); transition:.2s;
+    }
+    .pill:hover { background:#48223e; border-color:#ffc0db80; }
+    .pill[aria-pressed="false"] { opacity:.65; }
+    .middle { position: fixed; z-index:4; top:45%; left:50%; transform:translate(-50%,-50%);
+      text-align:center; pointer-events:none; width:min(90vw,640px); overflow:visible; }
+    .overline { color:#ffc3db; font-size:clamp(10px,1.2vw,13px); font-weight:400;
+      letter-spacing:.42em; margin:0 0 8px; text-shadow: 0 0 14px #ff528db6; }
+    /* Serif ưu tiên font hỗ trợ dấu tiếng Việt, không giãn ký tự */
+    #loveName {
+      font-family: "Noto Serif", "Times New Roman", "DejaVu Serif", serif;
+      font-weight: 500;
+      line-height: 1.26;
+      font-size: clamp(30px, 4.7vw, 63px);
+      margin: 0 auto;
+      max-width: 100%;
+      white-space: nowrap;
+      letter-spacing: 0;
+      font-kerning: normal;
+      text-rendering: auto;
+      color: #fff8fc;
+      text-shadow: 0 0 7px #fff3f2b5, 0 0 20px #ff62a9d6,
+                   0 0 52px #ff337fa8, 0 0 85px #ff337f44;
+      animation: breathe 2.5s ease-in-out infinite;
+    }
+    .undername { font-size:clamp(11px,1.2vw,14px); color:#ffbed8; letter-spacing:.2em;
+      margin:11px 0 0; text-shadow:0 0 15px #ff448595; }
+    .lower { position:fixed; bottom:clamp(20px,5vh,48px); left:50%; transform:translateX(-50%);
+      pointer-events:none; text-align:center; color:#e5a8c9; width:min(90vw,560px); }
+    .lower .decor { color:#ff74b1; letter-spacing:.65em; margin-bottom:12px; font-size:16px; }
+    .lower .caption { font-size:clamp(11px,1.1vw,13px); letter-spacing:.09em; opacity:.8; }
+    .panel { display:none; position:fixed; z-index:20; right:28px; top:76px; width:min(330px,calc(100vw - 32px));
+      border:1px solid #ffa2d069; border-radius:18px; padding:18px;
+      background:rgba(20,9,28,.94); box-shadow:0 14px 70px #0009; backdrop-filter:blur(18px); }
+    .panel.show {display:block;}
+    .panel label { display:block; color:#ffd8eb; font-size:12px; margin-bottom:10px; }
+    .panel input { background:#160c1e; border:1px solid #ff96be68; border-radius:9px; outline:0;
+      color:white; padding:11px 12px; width:100%; font:inherit; font-size:14px; user-select:text; }
+    .panel input:focus {border-color:#ff85ba;}
+    .panel button { width:100%; border:0; padding:11px; margin-top:12px; cursor:pointer;
+      color:#250b1a; border-radius:9px; background:linear-gradient(90deg,#ff83b7,#ffb4d1);
+      font-weight:650; }
+    @keyframes breathe { 0%,100%{filter:brightness(1); transform:scale(1)}
+      50%{filter:brightness(1.13); transform:scale(1.035)} }
+    @media(max-width:600px){
+      .topbar{inset:15px 15px auto;}.brand{font-size:9px;letter-spacing:.15em;gap:5px;}
+      .brand .heart{font-size:16px;}.pill{padding:9px 11px;font-size:11px;}
+      .middle{top:45%;width:calc(100vw - 30px);max-width:420px;}
+      #loveName { font-size:clamp(28px,7.6vw,40px); line-height:1.38; }
+      .undername{letter-spacing:.12em;}.overline{letter-spacing:.24em;}
+      .panel{right:16px;top:63px;}.lower{bottom:24px;}
+    }
+    @media(max-width:360px){ #loveName{font-size:clamp(25px,7.4vw,32px)} }
+    @media(max-height:540px){ .middle{top:47%} .lower{bottom:12px} }
+    @media(prefers-reduced-motion:reduce){ #loveName{animation:none} }
+  </style>
+</head>
+<body>
+<canvas id="heartScene" aria-label="Trái tim 3D phát sáng từ hàng nghìn hạt, xoay được bằng chuột hoặc cảm ứng"></canvas>
+<div class="shade"></div>
+<header class="topbar">
+  <div class="brand"><span class="heart">♥</span></div>
+  <div class="actions">
+    <button class="pill" id="rotateBtn" type="button" aria-pressed="true">⟳ Đang xoay</button>
+    <!-- <button class="pill" id="editBtn" type="button">✎ Đổi tên</button> -->
+  </div>
+</header>
+<main class="middle" aria-live="polite">
+  <!-- <p class="overline">FOREVER & ALWAYS</p> -->
+  <h1 id="loveName">Hoàn Yến</h1>
+  <!-- <p class="undername" id="loveMessage">You are my whole universe ♡</p> -->
+</main>
+<div class="lower"><div class="decor">✧ ♥ ✧</div>
+  <!-- <div class="caption">Kéo chuột / vuốt để xoay 3D · Lăn chuột để phóng to · Chạm để thả phép màu</div> -->
+</div>
+<!-- <form class="panel" id="editor">
+  <label for="nameInput">Tên nằm giữa trái tim</label>
+  <input id="nameInput" type="text" maxlength="25" placeholder="Ví dụ: Đạt ♡ Linh" autocomplete="off" />
+  <label for="messageInput" style="margin-top:13px">Lời nhắn bên dưới</label>
+  <input id="messageInput" type="text" maxlength="55" placeholder="You are my whole universe ♡" autocomplete="off" />
+  <button type="submit">Lưu lời yêu ♥</button>
+</form> -->
+<script>
+(() => {
+  // THAY ĐỔI NHANH TRỰC TIẾP TRONG CODE:
+  const CONFIG = {
+    name: 'Hoàn Yến',
+    message: 'You are my whole universe ♡',
+    particles: 10800,       // mật độ hạt trên máy tính; điện thoại tự tối ưu
+    heartDepth: 9.8,       // độ nổi khối 3D
+    autoRotation: true,
+    rotationSpeed: 0.0017, // xoay chậm 360 độ
+    hue: 337
+  };
+  const canvas = document.getElementById('heartScene');
+  const c = canvas.getContext('2d', { alpha:false });
+  const TAU = 2*Math.PI;
+  const random = (a,b) => a+Math.random()*(b-a);
+  const limit = (x,a,b) => Math.max(a,Math.min(b,x));
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let w=0, h=0, dpr=1, cx=0, cy=0, zoom=1;
+  let points=[], stars=[], fireworks=[], sprites=[], satellite=[];
+  let yaw=-0.22, pitch=0.07, targetYaw=-0.22, targetPitch=0.07;
+  let turning=CONFIG.autoRotation && !reduce, down=false, moved=false;
+  let lastPointer=null, lastFrame=performance.now(), start=lastFrame, lastTap=0;
+
+  // Các ô đổi tên và lời nhắn đang được ẩn trong HTML.
+  // Không truy cập các phần tử đã bị comment để tránh ngắt toàn bộ animation.
+  let userName=CONFIG.name.normalize('NFC'), userMessage=CONFIG.message;
+  const nameEl=document.getElementById('loveName');
+  const messageEl=document.getElementById('loveMessage');
+  const editor=document.getElementById('editor');
+  const editBtn=document.getElementById('editBtn');
+  const editingEnabled=!!(editor && editBtn);
+
+  // Chỉ dùng tên đã lưu nếu thực sự bật chức năng chỉnh sửa.
+  // Như vậy tên Hoàn Yến trong CONFIG không bị đè bằng dữ liệu MY LOVE cũ.
+  if(editingEnabled){
+    try {
+  userName=localStorage.getItem('heart3d:name')||userName;
+  userMessage=localStorage.getItem('heart3d:message')||userMessage;
+} catch(_) {}
+
+userName = String(userName || 'MY LOVE').normalize('NFC').replace(/\s+/g,' ').trim();
+userMessage = String(userMessage || 'You are my whole universe ♡').normalize('NFC').replace(/\s+/g,' ').trim();
+  }
+  function updateName(){
+    if(nameEl){
+      nameEl.textContent=userName;
+      const l=userName.length;
+      nameEl.style.fontSize=l>19?'clamp(18px,3.6vw,42px)':l>13?'clamp(23px,4.5vw,50px)':'';
+    }
+    if(messageEl) messageEl.textContent=userMessage;
+    fitName();
+  }
+  // Chỉ thu nhỏ khi cần; giữ toàn bộ chữ Hoàn Yến trong vùng trái tim.
+  function fitName(){
+    if(!nameEl)return;
+    nameEl.style.fontSize='';
+    const style=getComputedStyle(nameEl);
+    const baseSize=parseFloat(style.fontSize)||32;
+    const measure=document.createElement('canvas').getContext('2d');
+    measure.font=`${style.fontWeight} ${baseSize}px ${style.fontFamily}`;
+    const actualWidth=measure.measureText(nameEl.textContent).width;
+    const available=Math.min(window.innerWidth*.82,parseFloat(getComputedStyle(nameEl.parentElement).width)-18);
+    if(actualWidth>available){
+      nameEl.style.fontSize=Math.max(20,Math.floor(baseSize*available/actualWidth))+'px';
+    }
+  }
+  updateName();
+
+  // Nếu sau này bỏ comment phần đổi tên, nó vẫn hoạt động bình thường.
+  if(editingEnabled){
+    editBtn.addEventListener('click',()=>{
+      editor.classList.toggle('show');
+      if(editor.classList.contains('show')){
+        document.getElementById('nameInput').value=userName;
+        document.getElementById('messageInput').value=userMessage;
+        document.getElementById('nameInput').focus();
+      }
+    });
+    editor.addEventListener('submit',e=>{
+      e.preventDefault();
+      userName=document.getElementById('nameInput').value.trim()||CONFIG.name;
+      userMessage=document.getElementById('messageInput').value.trim()||CONFIG.message;
+      updateName();editor.classList.remove('show');
+      try{
+        localStorage.setItem('heart3d:name',userName);
+        localStorage.setItem('heart3d:message',userMessage);
+      }catch(_){}
+      flash(cx,cy,44);
+    });
+  }
+  const rotateBtn=document.getElementById('rotateBtn');
+  function setTurning(value){
+    turning=value;
+    rotateBtn.setAttribute('aria-pressed',String(value));
+    rotateBtn.textContent=value?'⟳ Đang xoay':'▷ Bật xoay';
+  }
+  setTurning(turning);
+  rotateBtn.addEventListener('click',()=>setTurning(!turning));
+
+  // Biên trái tim kinh điển. Hai bề mặt phía trước và sau được uốn cong
+  // thành một khối tròn 3D, không phải chỉ là hình phẳng với độ sâu ngẫu nhiên.
+  function heart(t){
+    return {
+      x: 16*Math.pow(Math.sin(t),3),
+      y: -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))
+    };
+  }
+  // Uniform sampling across the heart silhouette, avoiding the bright
+  // vertical "seam" produced by naïve random t/r sampling.
+  const BORDER_N=420, RAY_N=2048;
+  const border=Array.from({length:BORDER_N+1},(_,i)=>heart(i/BORDER_N*TAU));
+  const perimeterCdf=[];
+  let perimeter=0;
+  for(let i=0;i<BORDER_N;i++){
+    perimeter+=Math.hypot(border[i+1].x-border[i].x,border[i+1].y-border[i].y);
+    perimeterCdf.push(perimeter);
+  }
+  const rayR=[], angleCdf=[];
+  let areaWeight=0;
+  for(let j=0;j<RAY_N;j++){
+    const theta=(j+.5)/RAY_N*TAU;
+    const ux=Math.cos(theta),uy=Math.sin(theta);
+    let nearest=99;
+    for(let i=0;i<BORDER_N;i++){
+      const A=border[i], B=border[i+1];
+      const vx=B.x-A.x, vy=B.y-A.y;
+      const den=ux*vy-uy*vx;
+      if(Math.abs(den)<1e-10)continue;
+      const t=(A.x*vy-A.y*vx)/den;
+      const u=(A.x*uy-A.y*ux)/den;
+      if(t>0&&u>=0&&u<=1)nearest=Math.min(nearest,t);
+    }
+    const radius=nearest===99?10:nearest;
+    rayR.push(radius);
+    areaWeight+=radius*radius;
+    angleCdf.push(areaWeight);
+  }
+  function locate(cdf,u){
+    let lo=0,hi=cdf.length-1;
+    while(lo<hi){const mid=(lo+hi)>>1;if(cdf[mid]<u)lo=mid+1;else hi=mid;}
+    return lo;
+  }
+  function samplePoint(kind){
+    let x,y,r,z;
+    if(kind==='edge'){
+      const k=locate(perimeterCdf,Math.random()*perimeter);
+      const d1=k===0?0:perimeterCdf[k-1];
+      const f=random(0,1);
+      const R=random(.987,1.003);
+      x=(border[k].x+(border[k+1].x-border[k].x)*f)*R;
+      y=(border[k].y+(border[k+1].y-border[k].y)*f)*R;
+      z=random(-.52,.52);
+    }else{
+      const k=locate(angleCdf,Math.random()*areaWeight);
+      const theta=(k+random(0,1))/RAY_N*TAU;
+      const R=rayR[k];
+      r=Math.sqrt(Math.random())*.997;
+      x=R*r*Math.cos(theta);
+      y=R*r*Math.sin(theta);
+      const zMax=CONFIG.heartDepth*Math.sqrt(Math.max(0,1-r*r));
+      if(kind==='core') z=random(-zMax,zMax);
+      else z=(Math.random()<.5?-1:1)*zMax*random(.96,1.02);
+    }
+    return {
+      x,y,z,
+      size:random(.65,1.8)*(kind==='edge'?1.12:1),
+      hue:Math.floor(random(0,5)), phase:random(0,TAU),
+      alpha:random(.58,1), sparkle:Math.random()<.018,
+      sx:random(-40,40),sy:random(-36,36),sz:random(-22,22)
+    };
+  }
+  function makeSprite(index){
+    const palette=[
+      [255,72,143], [255,124,174], [255,174,204], [255,221,231], [255,92,167]
+    ];
+    const rgb=palette[index];
+    const off=document.createElement('canvas'); off.width=off.height=48;
+    const g=off.getContext('2d');
+    const grd=g.createRadialGradient(24,24,0,24,24,24);
+    grd.addColorStop(0, 'rgba(255,255,255,.98)');
+    grd.addColorStop(.13,`rgba(${rgb.join(',')},.95)`);
+    grd.addColorStop(.30,`rgba(${rgb.join(',')},.47)`);
+    grd.addColorStop(.64,`rgba(${rgb.join(',')},.13)`);
+    grd.addColorStop(1,`rgba(${rgb.join(',')},0)`);
+    g.fillStyle=grd;g.fillRect(0,0,48,48);
+    return off;
+  }
+  sprites=Array.from({length:5},(_,i)=>makeSprite(i));
+  function resize(){
+    w=innerWidth;h=innerHeight;
+    dpr=Math.min(devicePixelRatio||1,w<=600?1.7:2);
+    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+    c.setTransform(dpr,0,0,dpr,0,0);
+    cx=w/2;cy=h*(h<580?.465:.45);
+    fitName();
+    // Giảm lượng hạt có chọn lọc cho màn nhỏ, vẫn giữ hình trái tim dày và mượt.
+    const count=Math.min(CONFIG.particles,w<380?3200:w<650?4200:w<1000?7800:CONFIG.particles);
+    const edge=Math.floor(count*.22), core=Math.floor(count*.14);
+    points=[];
+    for(let i=0;i<count;i++)points.push(samplePoint(i<edge?'edge':i<edge+core?'core':'skin'));
+    stars=Array.from({length:Math.min(190,Math.floor(w*h/4000))},()=>({
+      x:random(0,w),y:random(0,h),size:random(.4,1.5),a:random(.15,.64),
+      phase:random(0,TAU),rate:random(.6,2.3)
+    }));
+    satellite=Array.from({length:35},()=>({angle:random(0,TAU),radius:random(.55,1.3),
+      speed:random(.15,.48), y:random(-.85,.85),size:random(.5,1.4)}));
+  }
+  addEventListener('resize',resize,{passive:true});resize();
+
+  function scale(){return Math.min(w/43,h/41,20)*zoom;}
+  function project(x,y,z,s,cosY,sinY,cosX,sinX){
+    const xx=x*cosY+z*sinY;
+    const zz=z*cosY-x*sinY;
+    const yy=y*cosX-zz*sinX;
+    const z2=y*sinX+zz*cosX;
+    const k=112/(112-z2);
+    return {x:cx+xx*s*k,y:cy+yy*s*k,z:z2,k};
+  }
+  function point2(x,y,r,color,a){
+    c.globalAlpha=a;c.fillStyle=color;
+    c.beginPath();c.arc(x,y,r,0,TAU);c.fill();
+  }
+  function flash(x,y,n=65){
+    for(let i=0;i<n;i++){
+      const ang=random(0,TAU),v=random(.6,4.9),life=random(36,85);
+      fireworks.push({x,y,vx:Math.cos(ang)*v,vy:Math.sin(ang)*v,
+        life,max:life,size:random(.6,2.2),color:Math.floor(random(0,5))});
+    }
+  }
+  function onDown(e){
+    down=true;moved=false;lastPointer={x:e.clientX,y:e.clientY};
+    try{canvas.setPointerCapture(e.pointerId);}catch(_){}
+  }
+  function onMove(e){
+    if(!down||!lastPointer)return;
+    const dx=e.clientX-lastPointer.x,dy=e.clientY-lastPointer.y;
+    if(Math.abs(dx)+Math.abs(dy)>1)moved=true;
+    targetYaw+=dx*.010;
+    targetPitch=limit(targetPitch+dy*.0075,-1.2,1.2);
+    lastPointer={x:e.clientX,y:e.clientY};
+  }
+  function onUp(e){
+    if(!down)return;
+    if(!moved){flash(e.clientX,e.clientY,66);lastTap=performance.now();}
+    down=false;lastPointer=null;
+  }
+  canvas.addEventListener('pointerdown',onDown);
+  canvas.addEventListener('pointermove',onMove);
+  canvas.addEventListener('pointerup',onUp);
+  canvas.addEventListener('pointercancel',()=>{down=false;lastPointer=null;});
+  canvas.addEventListener('wheel',e=>{
+    e.preventDefault();zoom=limit(zoom*(e.deltaY>0?.94:1.06),.65,1.42);
+  },{passive:false});
+
+  function drawMesh(s,ca,sa,cb,sb){
+    // Mạng kinh tuyến và vĩ tuyến cực mảnh trên bề mặt cong, tạo cảm giác khối 3D.
+    c.save();c.globalCompositeOperation='screen';
+    const levels=[-8,-6,-3,0,3,6,8];
+    for(const z of levels){
+      const radius=Math.sqrt(Math.max(0,1-(z/CONFIG.heartDepth)**2));
+      c.beginPath();
+      for(let j=0;j<=140;j++){
+        const h2=heart(j/140*TAU);
+        const p=project(h2.x*radius,h2.y*radius,z,s,ca,sa,cb,sb);
+        if(j===0)c.moveTo(p.x,p.y);else c.lineTo(p.x,p.y);
+      }
+      c.closePath(); c.strokeStyle=z>0?'rgba(255,141,182,.10)':'rgba(255,75,150,.055)';
+      c.lineWidth=.65;c.stroke();
+    }
+    for(let i=0;i<24;i++){
+      const h2=heart((i+.5)/24*TAU);
+      for(const sign of [-1,1]){
+        c.beginPath();
+        for(let j=0;j<=45;j++){
+          const r=j/45;
+          const z=sign*CONFIG.heartDepth*Math.sqrt(Math.max(0,1-r*r));
+          const p=project(h2.x*r,h2.y*r,z,s,ca,sa,cb,sb);
+          if(j===0)c.moveTo(p.x,p.y);else c.lineTo(p.x,p.y);
+        }
+        c.strokeStyle=sign>0?'rgba(255,150,206,.038)':'rgba(255,100,172,.025)';
+        c.lineWidth=.5;c.stroke();
+      }
+    }
+    c.restore();
+  }
+  function tick(now){
+    const dt=Math.min((now-lastFrame)/16.667,2.4);lastFrame=now;
+    const t=(now-start)/1000;
+    const emerge=reduce?1:limit(t/2.5,0,1);
+    const settle=1-Math.pow(1-emerge,3);
+    const beat=reduce?1:1+.046*Math.pow(Math.max(0,Math.sin(t*3.4)),10);
+    if(turning)targetYaw+=CONFIG.rotationSpeed*dt;
+    yaw+=(targetYaw-yaw)*Math.min(1,.085*dt);
+    pitch+=(targetPitch-pitch)*Math.min(1,.075*dt);
+    const s=scale()*beat;
+    const ca=Math.cos(yaw),sa=Math.sin(yaw),cb=Math.cos(pitch),sb=Math.sin(pitch);
+
+    c.globalAlpha=1;c.globalCompositeOperation='source-over';
+    c.fillStyle='#070410';c.fillRect(0,0,w,h);
+    const halo=c.createRadialGradient(cx,cy,10,cx,cy,Math.min(w,h)*.57);
+    halo.addColorStop(0,'rgba(130,20,88,.30)');
+    halo.addColorStop(.3,'rgba(101,20,86,.19)');
+    halo.addColorStop(.7,'rgba(54,10,65,.075)');
+    halo.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=halo;c.fillRect(0,0,w,h);
+    for(const p of stars){
+      const tw=.65+.35*Math.sin(t*p.rate+p.phase);
+      point2(p.x,p.y,p.size,'#ffeff8',p.a*tw);
+    }
+
+    drawMesh(s,ca,sa,cb,sb);
+    const framePts=[];
+    for(const p of points){
+      const dx=p.x*settle+p.sx*(1-settle);
+      const dy=p.y*settle+p.sy*(1-settle);
+      const dz=p.z*settle+p.sz*(1-settle);
+      const pos=project(dx,dy,dz,s,ca,sa,cb,sb);
+      framePts.push([pos,p]);
+    }
+    framePts.sort((a,b)=>a[0].z-b[0].z);
+    c.globalCompositeOperation='screen';
+    for(const [pos,p] of framePts){
+      const depthGlow=limit((pos.z+21)/42,0,1);
+      const twinkle=.82+.18*Math.sin(t*2.5+p.phase);
+      const a=(.29+depthGlow*.70)*p.alpha*twinkle*(.25+.75*emerge);
+      const size=(3.4+p.size*3.7)*pos.k*(.85+depthGlow*.25);
+      c.globalAlpha=a;
+      c.drawImage(sprites[p.hue],pos.x-size/2,pos.y-size/2,size,size);
+      if(p.sparkle && depthGlow>.47 && (Math.sin(t*2.4+p.phase)>.70)){
+        const r=1+depthGlow*1.8;
+        point2(pos.x,pos.y,r,'#fff1fc',.7*depthGlow);
+      }
+    }
+    c.globalCompositeOperation='source-over';c.globalAlpha=1;
+
+    // Các điểm sao mềm bao quanh bề mặt trái tim.
+    c.save();c.globalCompositeOperation='screen';
+    for(const sat of satellite){
+      const a=sat.angle+t*sat.speed;
+      const x=Math.cos(a)*24*sat.radius,y=Math.sin(a*.7+sat.y)*11;
+      const z=Math.sin(a)*15*sat.radius;
+      const p=project(x,y,z,s,ca,sa,cb,sb);
+      point2(p.x,p.y,sat.size,'#ffc2e1',.22+.32*(1+Math.sin(a*2))*.5);
+    }
+    for(let i=fireworks.length-1;i>=0;i--){
+      const p=fireworks[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.pow(.985,dt);
+      p.vy+=.015*dt;p.life-=dt;
+      const a=Math.max(0,p.life/p.max);
+      const size=(3+p.size*2.8)*a;
+      c.globalAlpha=a;
+      c.drawImage(sprites[p.color],p.x-size/2,p.y-size/2,size,size);
+      if(p.life<=0)fireworks.splice(i,1);
+    }
+    c.restore();c.globalAlpha=1;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
